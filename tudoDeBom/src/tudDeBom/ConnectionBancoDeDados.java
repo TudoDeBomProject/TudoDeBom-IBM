@@ -82,5 +82,16 @@ public class ConnectionBancoDeDados {
 
 		}
 	}
+	
+	public void adicionarCategoria(String nome) {
+		try {
+			// linha de execução da sintaxe de insert em SQL
+			String query = "INSERT INTO categoria (tipo_categoria) values ('" + nome + "');";
+			System.out.println(query);
+			this.statement.execute(query);
+		} catch (Exception e) {
+			System.out.println("Erro adicionar categoria: " + e.getMessage());
+		}
+	}
 
 }
