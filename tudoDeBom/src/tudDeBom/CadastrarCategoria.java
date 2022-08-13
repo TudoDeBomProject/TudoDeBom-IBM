@@ -34,7 +34,9 @@ public class CadastrarCategoria {
 				atualizaCategoria(nome, id);
 				break;
 			case 3:
-
+				System.out.println("Digite o ID da categoria para deletar");
+				id = sc.nextInt();
+				deletarCategoria(id);
 				break;
 			case 4:
 
@@ -51,7 +53,7 @@ public class CadastrarCategoria {
 		} while (opcao != 5);
 		sc.close();
 	}
-	
+
 	public static void adicionarCategoria(String nome) {
 		if (sintaxe.estadoConectado()) {
 			sintaxe.adicionarCategoria(nome);
@@ -61,7 +63,7 @@ public class CadastrarCategoria {
 			System.out.println("Erro ao Adicionar a categoria");
 		}
 	}
-	
+
 	public static void atualizaCategoria(String nome, int id) {
 		if (sintaxe.estadoConectado()) {
 			sintaxe.atualizarCategoria(nome, id);
@@ -71,5 +73,17 @@ public class CadastrarCategoria {
 			System.out.println("Erro ao atualizar a categoria");
 		}
 	}
+
+	public static void deletarCategoria(int id) {
+		if (sintaxe.estadoConectado()) {
+			sintaxe.deletarCategoria(id);
+			System.out.println("Categoria Deletado!");
+
+		} else {
+			System.out.println("Erro ao deletar a categoria");
+		}
+	}
+	
+	
 
 }

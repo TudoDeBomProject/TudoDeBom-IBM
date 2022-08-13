@@ -107,7 +107,7 @@ public class ConnectionBancoDeDados {
 	
 	public void deletarCategoria(int id) {
 		try {
-			String query = "DELETE FROM cliente WHERE id = '" + id + "' ;";
+			String query = "DELETE FROM categoria WHERE id = '" + id + "' ;";
 			System.out.println(query);
 			this.statement.execute(query);
 		} catch (Exception e) {
