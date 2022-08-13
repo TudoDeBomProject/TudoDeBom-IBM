@@ -9,6 +9,7 @@ public class TudoDeBom {
 	public static void main(String[] args) {
 		int id;
 		String nome;
+		String cpf;
 		Scanner sc = new Scanner(System.in);
 		int opcao;
 		sintaxe.conectar();
@@ -24,7 +25,11 @@ public class TudoDeBom {
 
 			switch (opcao) {
 			case 1:
-
+				System.out.println("Digite o NOME do cliente");
+				nome = sc.next();
+				System.out.println("Digite o CPF do cliente");
+				cpf = sc.next();
+				adicionarCliente(nome, cpf);
 				break;
 			case 2:
 				System.out.println("Digite o nome do cliente");
@@ -70,6 +75,16 @@ public class TudoDeBom {
 
 		} else {
 			System.out.println("Erro ao Deletar o cliente");
+		}
+	}
+	
+	public static void adicionarCliente(String nome, String cpf) {
+		if (sintaxe.estadoConectado()) {
+			sintaxe.adicionarCliente(nome, cpf);
+			System.out.println("Cliente Adicionado!");
+
+		} else {
+			System.out.println("Erro ao Adicionar o cliente");
 		}
 	}
 	

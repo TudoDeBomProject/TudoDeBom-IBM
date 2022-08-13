@@ -9,7 +9,7 @@ public class ConnectionBancoDeDados {
 	private Connection connection = null;
 	private Statement statement = null;
 //	private ResultSet resulSet = null;
-	
+
 	public void conectar() {
 		// Criação da variavel para conctar ao database
 		String servidor = "jdbc:mysql://localhost/tudodebom2";
@@ -27,7 +27,6 @@ public class ConnectionBancoDeDados {
 			System.out.println("Erro: " + e.getMessage());
 		}
 	}
-	
 
 	public boolean estadoConectado() {
 		if (this.connection != null) {
@@ -37,7 +36,7 @@ public class ConnectionBancoDeDados {
 		}
 
 	}
-	
+
 	public void atualizarCliente(String nome, int id) {
 		try {
 
@@ -48,7 +47,7 @@ public class ConnectionBancoDeDados {
 			System.out.println("Erro: " + e.getMessage());
 		}
 	}
-	
+
 	public void deletarCliente(int id) {
 		try {
 			String query = "DELETE FROM cliente WHERE id = '" + id + "' ;";
@@ -58,9 +57,16 @@ public class ConnectionBancoDeDados {
 			System.out.println("Erro ao deletar o id = " + id + e.getMessage());
 		}
 	}
-	
-	
-	
-	
+
+	public void adicionarCliente(String nome, String cpf) {
+		try {
+			// linha de execução da sintaxe de insert em SQL
+			String query = "INSERT INTO cliente (nome, cpf) values ('" + nome + "', '" + cpf + "');";
+			System.out.println(query);
+			this.statement.execute(query);
+		} catch (Exception e) {
+			System.out.println("Erro adicionar cliente: " + e.getMessage());
+		}
+	}
 
 }
