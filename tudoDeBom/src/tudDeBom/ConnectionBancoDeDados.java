@@ -69,4 +69,18 @@ public class ConnectionBancoDeDados {
 		}
 	}
 
+	public void adicionarProduto(int id, String nome, int estoque, double preco, boolean disponibilidade,
+			boolean descontoFlag, boolean remedioFlag) {
+		try {
+			String query = "INSERT INTO produto (categoria_id, nome, estoque, preco, disponibilidade, desconto_flag, remedio_flag) values ('"
+					+ id + "', '" + nome + "', '" + estoque + "', '" + preco + "', '" + disponibilidade + "', '"
+					+ descontoFlag + "', '" + remedioFlag + "');";
+			System.out.println(query);
+			this.statement.execute(query);
+		} catch (Exception e) {
+			System.out.println("Erro adicionar produto: " + e.getMessage());
+
+		}
+	}
+
 }
