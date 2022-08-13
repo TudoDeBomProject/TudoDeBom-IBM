@@ -93,5 +93,26 @@ public class ConnectionBancoDeDados {
 			System.out.println("Erro adicionar categoria: " + e.getMessage());
 		}
 	}
+	
+	public void atualizarCategoria(String nome, int id) {
+		try {
+
+			String query = "UPDATE categoria SET tipo_categoria = '" + nome + "' WHERE id = '" + id + "';";
+			System.out.println(query);
+			this.statement.execute(query);
+		} catch (Exception e) {
+			System.out.println("Erro ao atualizar categoria: " + e.getMessage());
+		}
+	}
+	
+	public void deletarCategoria(int id) {
+		try {
+			String query = "DELETE FROM cliente WHERE id = '" + id + "' ;";
+			System.out.println(query);
+			this.statement.execute(query);
+		} catch (Exception e) {
+			System.out.println("Erro ao deletar o id = " + id + e.getMessage());
+		}
+	}
 
 }

@@ -8,7 +8,7 @@ public class CadastrarCategoria {
 	public static void main(String[] args) {
 
 		Scanner sc = new Scanner(System.in);
-		int opcao;
+		int opcao, id;
 		String nome;
 		sintaxe.conectar();
 		do {
@@ -27,9 +27,12 @@ public class CadastrarCategoria {
 				adicionarCategoria(nome);
 				break;
 			case 2:
-				System.out.println("Digite ");
+				System.out.println("Digite o Nome da categoria");
+				nome = sc.next();
+				System.out.println("Digte o ID da categoria que quer atualizar");
+				id = sc.nextInt();
+				atualizaCategoria(nome, id);
 				break;
-
 			case 3:
 
 				break;
@@ -56,6 +59,16 @@ public class CadastrarCategoria {
 
 		} else {
 			System.out.println("Erro ao Adicionar a categoria");
+		}
+	}
+	
+	public static void atualizaCategoria(String nome, int id) {
+		if (sintaxe.estadoConectado()) {
+			sintaxe.atualizarCategoria(nome, id);
+			System.out.println("Categoria Atualizado!");
+
+		} else {
+			System.out.println("Erro ao atualizar a categoria");
 		}
 	}
 
