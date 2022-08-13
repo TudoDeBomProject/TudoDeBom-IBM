@@ -49,6 +49,16 @@ public class ConnectionBancoDeDados {
 		}
 	}
 	
+	public void deletarCliente(int id) {
+		try {
+			String query = "DELETE FROM cliente WHERE id = '" + id + "' ;";
+			System.out.println(query);
+			this.statement.execute(query);
+		} catch (Exception e) {
+			System.out.println("Erro ao deletar o id = " + id + e.getMessage());
+		}
+	}
+	
 	
 	
 	

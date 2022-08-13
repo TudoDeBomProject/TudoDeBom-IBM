@@ -34,7 +34,9 @@ public class TudoDeBom {
 				atualizaCliente(nome, id);
 				break;
 			case 3:
-
+				System.out.println("Digite o id do cliente para deletar");
+				id = sc.nextInt();
+				deletarCliente(id);
 				break;
 			case 4:
 
@@ -52,7 +54,6 @@ public class TudoDeBom {
 	}
 
 	public static void atualizaCliente(String nome, int id) {
-
 		if (sintaxe.estadoConectado()) {
 			sintaxe.atualizarCliente(nome, id);
 			System.out.println("Cliente Atualizado!");
@@ -61,4 +62,16 @@ public class TudoDeBom {
 			System.out.println("Erro ao atualizar o cliente");
 		}
 	}
+	
+	public static void deletarCliente(int id) {
+		if (sintaxe.estadoConectado()) {
+			sintaxe.deletarCliente(id);
+			System.out.println("Cliente Deletado!");
+
+		} else {
+			System.out.println("Erro ao Deletar o cliente");
+		}
+	}
+	
+	
 }
