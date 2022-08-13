@@ -39,7 +39,8 @@ public class CadastrarCategoria {
 				deletarCategoria(id);
 				break;
 			case 4:
-
+				System.out.println("Categorias cadastradas:");
+				listarCategorias();
 				break;
 			case 5:
 				System.out.println("Saindo...");
@@ -83,7 +84,13 @@ public class CadastrarCategoria {
 			System.out.println("Erro ao deletar a categoria");
 		}
 	}
-	
-	
+
+	public static void listarCategorias() {
+		if (sintaxe.estadoConectado()) {
+			sintaxe.listarCategorias();
+		} else {
+			System.out.println("Erro ao listar categorias");
+		}
+	}
 
 }

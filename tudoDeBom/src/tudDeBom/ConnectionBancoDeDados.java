@@ -2,13 +2,14 @@ package tudDeBom;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.Statement;
 
 public class ConnectionBancoDeDados {
 
 	private Connection connection = null;
 	private Statement statement = null;
-//	private ResultSet resulSet = null;
+	private ResultSet resulSet = null;
 
 	public void conectar() {
 		// Criação da variavel para conctar ao database
@@ -82,7 +83,7 @@ public class ConnectionBancoDeDados {
 
 		}
 	}
-	
+
 	public void adicionarCategoria(String nome) {
 		try {
 			// linha de execução da sintaxe de insert em SQL
@@ -93,7 +94,7 @@ public class ConnectionBancoDeDados {
 			System.out.println("Erro adicionar categoria: " + e.getMessage());
 		}
 	}
-	
+
 	public void atualizarCategoria(String nome, int id) {
 		try {
 
@@ -104,7 +105,7 @@ public class ConnectionBancoDeDados {
 			System.out.println("Erro ao atualizar categoria: " + e.getMessage());
 		}
 	}
-	
+
 	public void deletarCategoria(int id) {
 		try {
 			String query = "DELETE FROM categoria WHERE id = '" + id + "' ;";
@@ -112,6 +113,29 @@ public class ConnectionBancoDeDados {
 			this.statement.execute(query);
 		} catch (Exception e) {
 			System.out.println("Erro ao deletar o id = " + id + e.getMessage());
+		}
+	}
+
+	public void listarCategorias() {
+
+		try {
+			// tratando a conexão do nosso retorno do select
+			// o mysql não é case sensitive
+			String query = "SELECT * FROM 	categoria";
+			this.resulSet = this.statement.executeQuery(query);
+			this.statement = this.connection.createStatement();
+
+			// criando um laço de repetição para retornan os registros da nossa tabela
+			while (this.resulSet.next()) {
+				String id = resulSet.getString("id");
+				String nome = resulSet.getString("tipo_categoria");
+
+				System.out.println("id: " + id + ", tipo_alimento: " + nome);
+				System.out.println();
+			}
+		} catch (Exception e) {
+			System.out.println("Erro: " + e.getMessage());
+
 		}
 	}
 
