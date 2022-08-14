@@ -2,6 +2,7 @@ package tudDeBom;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -306,6 +307,31 @@ public class ConnectionBancoDeDados {
 			System.out.println("Erro: " + e.getMessage());
 
 		}
+	}
+	
+	public void listaCategoriasProdutos(String categoria) {
+		
+		try {
+			
+			PreparedStatement pst = this.connection.prepareStatement("select c.tipo_categoria, p.nome, p.estoque from categoria c inner join produto p on p.categoria_id = c.id where c.tipo_categoria like '%"+categoria+"%';"); 
+			
+			String query = "select c.tipo_categoria, p.nome, p.estoque from categoria c inner join produto p on p.categoria_id = c.id where c.tipo_categoria like '%"+categoria+"%';";
+//			this.resulSet = this.statement.execute(query);
+			this.resulSet = pst.executeQuery();
+			this.statement = this.connection.createStatement();
+			
+			while(this.resulSet.next()) {
+				String tipoCategoria = resulSet.getString("c.tipo_categoria");
+				String nomeProduto = resulSet.getString("p.nome");
+				int estoqueProduto = resulSet.getInt("p.estoque");
+				System.out.println("Categoria: " + tipoCategoria + " | Produto: "+nomeProduto+ " | Estoque: " + estoqueProduto);
+			}
+			
+		} catch (Exception e) {
+			System.out.println("Erro: " + e.getMessage());
+		}
+		
+
 	}
 
 }

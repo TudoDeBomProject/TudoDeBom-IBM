@@ -84,4 +84,6 @@ select  (select sum(estoque) from produto)-(select sum(quantidade) from item_ped
 -- update produto set p.qtd = (p.qtd - inf.qtd) from item_nf inf inner join produto p on p.id = inf.produto_id;
 
 
+select c.tipo_categoria 'CATEGORIA', p.nome, 'PRODUTO', p.estoque 'ESTOQUE'  from categoria c inner join produto p on p.categoria_id = c.id;
+
   

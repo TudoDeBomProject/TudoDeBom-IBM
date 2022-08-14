@@ -7,8 +7,10 @@ public class CadastrarCategoria {
 
 	public static void main(String[] args) {
 		Scanner sc = new Scanner(System.in);
+		Scanner sc1 = new Scanner(System.in);
+
 		int opcao, id;
-		String nome;
+		String nome, categoria;
 		sintaxe.conectar();
 		do {
 			System.out.println("Escolha uma das opções: ");
@@ -16,7 +18,8 @@ public class CadastrarCategoria {
 			System.out.println("2 - Atualizar categoria");
 			System.out.println("3 - Deletar categoria");
 			System.out.println("4 - Lista de categorias");
-			System.out.println("5 - Sair");
+			System.out.println("5 - Listar produtos de acordo com a categoria");
+			System.out.println("6 - Sair");
 			opcao = sc.nextInt();
 
 			switch (opcao) {
@@ -40,8 +43,13 @@ public class CadastrarCategoria {
 			case 4:
 				System.out.println("Categorias cadastradas:");
 				listarCategorias();
-				break;
+				break;	
 			case 5:
+				System.out.println("Digite a categoria");
+				categoria = sc1.nextLine();
+				listarProdutosDeAcordoComACategoria(categoria);
+				break;
+			case 6:
 				System.out.println("Saindo...");
 				break;
 			default:
@@ -49,7 +57,7 @@ public class CadastrarCategoria {
 				break;
 			}
 
-		} while (opcao != 5);
+		} while (opcao != 6);
 		sc.close();
 	}
 
@@ -88,6 +96,14 @@ public class CadastrarCategoria {
 			sintaxe.listarCategorias();
 		} else {
 			System.out.println("Erro ao listar categorias");
+		}
+	}
+	
+	public static void listarProdutosDeAcordoComACategoria(String categoria) {
+		if (sintaxe.estadoConectado()) {
+			sintaxe.listaCategoriasProdutos(categoria);
+		} else {
+			System.out.println("Erro ao listar produtos da categoria");
 		}
 	}
 
