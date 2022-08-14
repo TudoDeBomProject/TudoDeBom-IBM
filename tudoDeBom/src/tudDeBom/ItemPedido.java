@@ -71,7 +71,7 @@ public class ItemPedido {
 	public static void addItemPedido(int pedidoId, int produtoId, int quantidade) {
 		if (sintaxe.estadoConectado()) {
 			sintaxe.addItemPedidoPedido(pedidoId, produtoId, quantidade);
-			System.out.println("Item adicionado");
+		
 
 		} else {
 			System.out.println("Erro ao adicionar");

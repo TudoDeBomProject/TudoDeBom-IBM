@@ -126,7 +126,7 @@ public class ConnectionBancoDeDados {
 				int estoque = resulSet.getInt("estoque");
 
 				System.out.println("id: " + id + " | nome: " + nome + " | quantidade: " + estoque);
-			
+
 			}
 		} catch (Exception e) {
 			System.out.println("Erro: " + e.getMessage());
@@ -192,7 +192,7 @@ public class ConnectionBancoDeDados {
 
 	public void criarPedido(String endereco, int idCliente) {
 		try {
-				
+
 			// linha de execução da sintaxe de insert em SQL
 			String query = "INSERT INTO pedido (endereco_entrega, total_pedido, cliente_id) values ('" + endereco
 					+ "', '" + idCliente + "');";
@@ -253,41 +253,68 @@ public class ConnectionBancoDeDados {
 	public void addItemPedidoPedido(int pedidoId, int produtoId, int quantidade) {
 		try {
 			// linha de execução da sintaxe de insert em SQL
-			
-			String query3 =  "select * from produto where id = '"+produtoId+"'";  
-			String query4 = "select total_pedido from pedido where id = '"+pedidoId+"';";
+
+			String query3 = "select * from produto where id = '" + produtoId + "'";
 			this.resulSet = this.statement.executeQuery(query3);
-			double preco = 0;
-			
-			if(resulSet.next()) {
-				preco = resulSet.getDouble("preco");
+			double precoUnitario = 0;
+			int estoque = 0;
+			boolean disponivel = false;
+			boolean remedioFlag = false;
+			boolean descontoFlag = false;
+			if (resulSet.next()) {
+				precoUnitario = resulSet.getDouble("preco");
+				estoque = resulSet.getInt("estoque");
+				disponivel = resulSet.getBoolean("disponibilidade");
+				remedioFlag = resulSet.getBoolean("remedio_flag");
+				descontoFlag = resulSet.getBoolean("desconto_flag");
+				
+				
 			}
-			
-			String query = "INSERT INTO item_pedido (pedido_id, produto_id, quantidade, sub_total) values ('" + pedidoId
-					+ "', '" + produtoId + "', '" + quantidade + "', '" + (quantidade*preco) + "');";
-			
-			String query2 = "UPDATE produto SET estoque = estoque - '"+quantidade+"' WHERE id = '"+produtoId+"';";
-			
-//			String query4 = "select pd.id , ip.sub_total from pedido pd  inner join item_pedido ip on ip.pedido_id = pd.id where pd.id = '"+pedidoId+"';";
-			this.resulSet = this.statement.executeQuery(query4);
-			double totalPedido = 0;
-			if(resulSet.next()) {
-				totalPedido = resulSet.getDouble("total_pedido");
+
+			if (estoque > 0 && disponivel) {
+
+				if (remedioFlag == true || descontoFlag == true) {
+					String query = "INSERT INTO item_pedido (pedido_id, produto_id, quantidade, sub_total) values ('"
+							+ pedidoId + "', '" + produtoId + "', '" + quantidade + "', '"
+							+ (quantidade * (precoUnitario -(precoUnitario * 0.2))) + "');";
+					this.statement.execute(query);
+					System.out.println(query);
+					System.out.println("Descontado");
+				} else {
+					String query = "INSERT INTO item_pedido (pedido_id, produto_id, quantidade, sub_total) values ('"
+							+ pedidoId + "', '" + produtoId + "', '" + quantidade + "', '"
+							+ (quantidade * precoUnitario) + "');";
+					this.statement.execute(query);
+					System.out.println(query);
+					System.out.println("Sem Desconto");
+				}
+
+				// Atualiza o estoque
+				String query2 = "UPDATE produto SET estoque = estoque - '" + quantidade + "' WHERE id = '" + produtoId
+						+ "';";
+
+				// busca o preco total da entidade pedido
+				String query4 = "select total_pedido from pedido where id = '" + pedidoId + "';";
+				this.resulSet = this.statement.executeQuery(query4);
+				double totalPedido = 0;
+				if (resulSet.next()) {
+					totalPedido = resulSet.getDouble("total_pedido");
+				}
+				
+				double subTotal = (quantidade * precoUnitario);
+				String query5 = "UPDATE pedido SET total_pedido = '" + totalPedido + "' + '" + subTotal
+						+ "'  WHERE id = '" + produtoId + "';";
+
+//				System.out.println(query);
+//				this.statement.execute(query);
+				this.statement.execute(query2);
+				this.statement.execute(query5);
+				System.out.println("Adicionado");
+				System.out.println(disponivel);
+			} else {
+				System.out.println("Produto com estoque 0");
 			}
-			double subTotal = (quantidade*preco);
-			
-			String query5 = "UPDATE pedido SET total_pedido = '"+totalPedido+"' + '"+subTotal+"'  WHERE id = '"+produtoId+"';";
-			
-			
-			
-//			String query5 = "UPDATE pedido SET total_pedido = '"+subTotal+"' WHERE id = '"+pedidoId+"';";
-			
-			
-			
-			System.out.println(query);
-			this.statement.execute(query);
-			this.statement.execute(query2);
-			this.statement.execute(query5);
+
 		} catch (Exception e) {
 			System.out.println("Erro ao adicionar item pedido: " + e.getMessage());
 		}
@@ -299,7 +326,7 @@ public class ConnectionBancoDeDados {
 			String query = "UPDATE item_pedido SET pedido_id = '" + pedidoId + "', produto_id = '" + produtoId
 					+ "', quantidade = '" + quantidade + "', sub_total = '" + subTotal + "'  WHERE id = '"
 					+ idItemPedido + "';";
-			
+
 			System.out.println(query);
 			this.statement.execute(query);
 		} catch (Exception e) {
@@ -343,30 +370,33 @@ public class ConnectionBancoDeDados {
 
 		}
 	}
-	
+
 	public void listaCategoriasProdutos(String categoria) {
-		
+
 		try {
-			
-			PreparedStatement pst = this.connection.prepareStatement("select c.tipo_categoria, p.nome, p.estoque from categoria c inner join produto p on p.categoria_id = c.id where c.tipo_categoria like '%"+categoria+"%';"); 
-			
-			String query = "select c.tipo_categoria, p.nome, p.estoque from categoria c inner join produto p on p.categoria_id = c.id where c.tipo_categoria like '%"+categoria+"%';";
-		this.resulSet = this.statement.executeQuery(query);
+
+			PreparedStatement pst = this.connection.prepareStatement(
+					"select c.tipo_categoria, p.nome, p.estoque from categoria c inner join produto p on p.categoria_id = c.id where c.tipo_categoria like '%"
+							+ categoria + "%';");
+
+			String query = "select c.tipo_categoria, p.nome, p.estoque from categoria c inner join produto p on p.categoria_id = c.id where c.tipo_categoria like '%"
+					+ categoria + "%';";
+			this.resulSet = this.statement.executeQuery(query);
 			this.resulSet = pst.executeQuery();
 			this.statement = this.connection.createStatement();
-			
-			while(this.resulSet.next()) {
+
+			while (this.resulSet.next()) {
 				String tipoCategoria = resulSet.getString("c.tipo_categoria");
 				String nomeProduto = resulSet.getString("p.nome");
 				int estoqueProduto = resulSet.getInt("p.estoque");
-				System.out.println("Categoria: " + tipoCategoria + " | Produto: "+nomeProduto+ " | Estoque: " + estoqueProduto);
+				System.out.println(
+						"Categoria: " + tipoCategoria + " | Produto: " + nomeProduto + " | Estoque: " + estoqueProduto);
 			}
 			System.out.println();
-			
+
 		} catch (Exception e) {
 			System.out.println("Erro: " + e.getMessage());
 		}
-		
 
 	}
 
