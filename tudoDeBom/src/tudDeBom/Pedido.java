@@ -26,15 +26,12 @@ public class Pedido {
 			case 1:
 //				sc.nextLine();
 				System.out.println("Digite o Endereco de entrega");
-				endereco = sc1.nextLine();
-				
-				System.out.println("Valor Total do Pedido");
-				valorTotal = sc1.nextDouble();
+				endereco = sc1.nextLine();	
 
 				System.out.println("Digite o ID do cliente");
 				idCliente = sc1.nextInt();
 
-				criarPedido(endereco, valorTotal, idCliente);
+				criarPedido(endereco, idCliente);
 				break;
 			case 2:
 				System.out.println("Digite o Enderco do pedido");
@@ -64,9 +61,9 @@ public class Pedido {
 		sc.close();
 	}
 
-	public static void criarPedido(String endereco, double valorTotal, int idClientee) {
+	public static void criarPedido(String endereco, int idClientee) {
 		if (sintaxe.estadoConectado()) {
-			sintaxe.criarPedido(endereco, valorTotal, idClientee);
+			sintaxe.criarPedido(endereco, idClientee);
 			System.out.println("Pedido Criado!");
 
 		} else {

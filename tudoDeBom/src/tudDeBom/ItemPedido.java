@@ -33,10 +33,8 @@ public class ItemPedido {
 				System.out.println("Digite a quantidade");
 				quantidade = sc1.nextInt();
 				
-				System.out.println("Digite o sub-total");
-				subtotal = sc1.nextDouble();
 				
-				addItemPedido(idPedido, idProduto, quantidade, subtotal);
+				addItemPedido(idPedido, idProduto, quantidade);
 				break;
 			case 2:
 				System.out.println("Digite o ID do pedido");
@@ -70,9 +68,9 @@ public class ItemPedido {
 		} while (opcao != 5);
 	}
 	
-	public static void addItemPedido(int pedidoId, int produtoId, int quantidade, double subTotal) {
+	public static void addItemPedido(int pedidoId, int produtoId, int quantidade) {
 		if (sintaxe.estadoConectado()) {
-			sintaxe.addItemPedidoPedido(pedidoId, produtoId, quantidade, subTotal);
+			sintaxe.addItemPedidoPedido(pedidoId, produtoId, quantidade);
 			System.out.println("Item adicionado");
 
 		} else {
