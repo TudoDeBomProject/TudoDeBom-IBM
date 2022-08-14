@@ -23,7 +23,7 @@ disponibilidade boolean not null,
 desconto_flag boolean not null,
 remedio_flag boolean not null,
 
-foreign key(categoria_id) references categoria(id) 
+foreign key(categoria_id) references categoria(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 create table pedido(
@@ -32,7 +32,7 @@ endereco_entrega varchar(100) not null,
 total_pedido double not null,
 cliente_id int not null,
 
-foreign key(cliente_id) references cliente(id)
+foreign key(cliente_id) references cliente(id) ON DELETE CASCADE ON UPDATE CASCADE
 -- foreign key(item_nf_id) references item_nf(id)
 );
 
@@ -49,7 +49,7 @@ foreign key(produto_id) references produto(id)
 
 insert into cliente (nome, cpf) values ("nome1", "123.123.123-123"), ("nome2", "123.123.123-123"), ("nome3", "123.123.123-123"), ("nome4", "123.123.123-123");
  
-insert into categoria(nome) values ("tipo 1"), ("tipo 2"), ("tipo 3"), ("tipo 4");
+insert into categoria(tipo_categoria) values ("tipo 1"), ("tipo 2"), ("tipo 3"), ("tipo 4");
  
 insert into produto(categoria_id, nome, estoque, preco, disponibilidade, desconto_flag, remedio_flag) values 
 (1, "prod1", 50, 2.00, true, false, true), (1, "prod1", 50, 4.00, false, true, false), (1, "prod1", 50, 6.00, true, false, true), (1, "prod1", 50, 8.00, false, true, false),

@@ -1,7 +1,8 @@
 package tudDeBom;
+
 import java.util.Scanner;
 
-public class CadastrarCategoria {
+public class Categoria {
 
 	public static ConnectionBancoDeDados sintaxe = new ConnectionBancoDeDados();
 
@@ -90,5 +91,5 @@ public class CadastrarCategoria {
 			System.out.println("Erro ao listar categorias");
 		}
 	}
-
 }
+
