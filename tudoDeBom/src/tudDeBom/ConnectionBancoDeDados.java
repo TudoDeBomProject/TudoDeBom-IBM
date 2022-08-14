@@ -316,7 +316,7 @@ public class ConnectionBancoDeDados {
 			PreparedStatement pst = this.connection.prepareStatement("select c.tipo_categoria, p.nome, p.estoque from categoria c inner join produto p on p.categoria_id = c.id where c.tipo_categoria like '%"+categoria+"%';"); 
 			
 			String query = "select c.tipo_categoria, p.nome, p.estoque from categoria c inner join produto p on p.categoria_id = c.id where c.tipo_categoria like '%"+categoria+"%';";
-//			this.resulSet = this.statement.execute(query);
+		this.resulSet = this.statement.executeQuery(query);
 			this.resulSet = pst.executeQuery();
 			this.statement = this.connection.createStatement();
 			
@@ -326,6 +326,7 @@ public class ConnectionBancoDeDados {
 				int estoqueProduto = resulSet.getInt("p.estoque");
 				System.out.println("Categoria: " + tipoCategoria + " | Produto: "+nomeProduto+ " | Estoque: " + estoqueProduto);
 			}
+			System.out.println();
 			
 		} catch (Exception e) {
 			System.out.println("Erro: " + e.getMessage());
