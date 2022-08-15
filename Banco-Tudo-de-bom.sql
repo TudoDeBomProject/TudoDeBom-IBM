@@ -18,7 +18,7 @@ id int auto_increment primary key,
 categoria_id int not null,
 nome varchar(100) not null,
 estoque int not null,
-preco double not null,
+preco decimal(5,2) not null,
 disponibilidade boolean not null,
 desconto_flag boolean not null,
 remedio_flag boolean not null,
@@ -29,7 +29,7 @@ foreign key(categoria_id) references categoria(id) ON DELETE CASCADE ON UPDATE C
 create table pedido(
 id int auto_increment primary key,
 endereco_entrega varchar(100) not null,
-total_pedido double,
+total_pedido decimal(5,2),
 cliente_id int not null,
 
 foreign key(cliente_id) references cliente(id) ON DELETE CASCADE ON UPDATE CASCADE
@@ -41,10 +41,10 @@ id int auto_increment primary key,
 pedido_id int not null,
 produto_id int not null,
 quantidade int not null,
-sub_total double,
+sub_total decimal(5,2),
 
-foreign key(pedido_id) references pedido(id),
-foreign key(produto_id) references produto(id)
+foreign key(pedido_id) references pedido(id) ON DELETE CASCADE ON UPDATE CASCADE,
+foreign key(produto_id) references produto(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 insert into cliente (nome, cpf) values ("nome1", "123.123.123-123"), ("nome2", "123.123.123-123"), ("nome3", "123.123.123-123"), ("nome4", "123.123.123-123");
@@ -86,8 +86,15 @@ select  (select sum(estoque) from produto)-(select sum(quantidade) from item_ped
 
 select c.tipo_categoria 'CATEGORIA', p.nome, 'PRODUTO', p.estoque 'ESTOQUE'  from categoria c inner join produto p on p.categoria_id = c.id where c.tipo_categoria like '%TIPO 1%';
 
-select * from produto where id = 1; 
+select * from produto inner join categoria on produto.categoria_id = categoria.id where produto.id = 1; 
 
 select * from item_pedido where id = 1; 
 
 select pd.id 'Nº PEDIDO', ip.sub_total 'SUB-TOTAL' from pedido pd  inner join item_pedido ip on ip.pedido_id = pd.id where pd.id = 1;
+
+select cl.nome 'CLIENTE', pd.id 'Nº PEDIDO', ip.quantidade 'QUANTIDADE', pr.preco 'PREÇO UNITARIO', pr.desconto_flag 'DESCONTO FLAG 20%', pr.remedio_flag 'GENERICO FLAG 20%', ip.sub_total 'SUB-TOTAL', pd.total_pedido 'TOTAL PEDIDO', pd.endereco_entrega 'ENDEREÇO ENTREGA', pr.id 'COD PROD', pr.nome 'PRODUTO',pr.estoque 'ESTOQUE', c.tipo_categoria 'CATEGORIA' from pedido pd inner join item_pedido ip on pd.id = ip.pedido_id
+ inner join produto pr on pr.id = ip.produto_id 
+ inner join cliente cl on cl.id = pd.cliente_id
+ inner join categoria c on c.id = pr.categoria_id where cl.id = 1; 
+ 
+ select * from item_pedido where pedido_id = 2;

@@ -5,6 +5,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.DecimalFormat;
 
 public class ConnectionBancoDeDados {
 
@@ -194,7 +195,7 @@ public class ConnectionBancoDeDados {
 		try {
 
 			// linha de execução da sintaxe de insert em SQL
-			String query = "INSERT INTO pedido (endereco_entrega, total_pedido, cliente_id) values ('" + endereco
+			String query = "INSERT INTO pedido (endereco_entrega, cliente_id) values ('" + endereco
 					+ "', '" + idCliente + "');";
 			System.out.println(query);
 			this.statement.execute(query);
@@ -217,6 +218,20 @@ public class ConnectionBancoDeDados {
 	public void deletarPedido(int id) {
 		try {
 			String query = "DELETE FROM pedido WHERE id = '" + id + "' ;";
+			String query2 = "SELECT * FROM item_pedido WHERE pedido_id = '"+id+"' ;";
+			this.resulSet = this.statement.executeQuery(query2);
+			//obrigatorio
+			this.statement = this.connection.createStatement();
+			
+			while(this.resulSet.next()) {
+				int idProduto = resulSet.getInt("produto_id");
+				int quantidade = resulSet.getInt("quantidade");
+				
+				String query3 = "UPDATE produto SET estoque = estoque + '"+quantidade+"' WHERE id = '"+idProduto+"';";
+				this.statement.execute(query3);
+			}
+			
+			
 			System.out.println(query);
 			this.statement.execute(query);
 		} catch (Exception e) {
@@ -256,6 +271,7 @@ public class ConnectionBancoDeDados {
 
 			String query3 = "select * from produto where id = '" + produtoId + "'";
 			this.resulSet = this.statement.executeQuery(query3);
+			this.statement = this.connection.createStatement();
 			double precoUnitario = 0;
 			int estoque = 0;
 			boolean disponivel = false;
@@ -267,8 +283,6 @@ public class ConnectionBancoDeDados {
 				disponivel = resulSet.getBoolean("disponibilidade");
 				remedioFlag = resulSet.getBoolean("remedio_flag");
 				descontoFlag = resulSet.getBoolean("desconto_flag");
-				
-				
 			}
 
 			if (estoque > 0 && disponivel) {
@@ -296,15 +310,16 @@ public class ConnectionBancoDeDados {
 				// busca o preco total da entidade pedido
 				String query4 = "select total_pedido from pedido where id = '" + pedidoId + "';";
 				this.resulSet = this.statement.executeQuery(query4);
-				double totalPedido = 0;
+				double totalPedido = 0.0;
 				if (resulSet.next()) {
 					totalPedido = resulSet.getDouble("total_pedido");
 				}
-				
-				double subTotal = (quantidade * precoUnitario);
-				String query5 = "UPDATE pedido SET total_pedido = '" + totalPedido + "' + '" + subTotal
+				double qtd = Double.valueOf(quantidade);
+				double subTotal = (qtd * precoUnitario);
+				String query5 = "UPDATE pedido SET total_pedido = '"+totalPedido+"' + '" + subTotal
 						+ "'  WHERE id = '" + produtoId + "';";
 
+				System.out.println("QUERY5 " + query5);
 //				System.out.println(query);
 //				this.statement.execute(query);
 				this.statement.execute(query2);
@@ -334,10 +349,28 @@ public class ConnectionBancoDeDados {
 		}
 	}
 
-	public void deletarItemPedido(int id) {
+	public void deletarItemPedido(int id, int pedidoId) {
 		try {
-			String query = "DELETE FROM item_pedido WHERE id = '" + id + "' ;";
+			String query = "DELETE FROM item_pedido WHERE id = '" + id + "' AND pedido_id = '"+pedidoId+"';";
+			String query3 = "SELECT *	FROM item_pedido WHERE id = '"+id+"';" ;
+			this.resulSet = this.statement.executeQuery(query3);
+			this.statement = this.connection.createStatement();
+			int produtoId = 0;
+			int quantidade = 0;
 			System.out.println(query);
+			
+			
+			if (this.resulSet.next()) {
+				 produtoId = resulSet.getInt("produto_id");
+				 quantidade = resulSet.getInt("quantidade");
+//				this.statement = this.connection.createStatement();
+//				this.resulSet = this.statement.executeQuery(query2);
+//				System.out.println(query2);
+			}
+			String query2 = "UPDATE produto SET estoque = estoque + '"+quantidade+"' where id = '"+produtoId+"';";
+//			this.resulSet = this.statement.executeQuery(query2);
+
+			this.statement.executeUpdate(query2);
 			this.statement.execute(query);
 		} catch (Exception e) {
 			System.out.println("Erro ao deletar o id = " + id + e.getMessage());

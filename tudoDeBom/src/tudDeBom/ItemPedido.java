@@ -52,7 +52,9 @@ public class ItemPedido {
 			case 3:
 				System.out.println("Digite o ID do item pedido para deletar");
 				idItemPedido = sc1.nextInt();
-				deletarItemPedido(idItemPedido);
+				System.out.println("Digite o ID do pedido");
+				idPedido = sc1.nextInt();
+				deletarItemPedido(idItemPedido, idPedido);
 				break;
 			case 4:
 				System.out.println("Itens pedidos cadastrados:");
@@ -88,10 +90,9 @@ public class ItemPedido {
 		}
 	}
 	
-	public static void deletarItemPedido(int id) {
+	public static void deletarItemPedido(int id, int pedidoId) {
 		if (sintaxe.estadoConectado()) {
-			sintaxe.deletarItemPedido(id);
-			System.out.println("Item Deletado!");
+			sintaxe.deletarItemPedido(id, pedidoId);
 
 		} else {
 			System.out.println("Erro ao deletar o item pedido");
