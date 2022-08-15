@@ -306,6 +306,13 @@ public class ConnectionBancoDeDados {
 				// Atualiza o estoque
 				String query2 = "UPDATE produto SET estoque = estoque - '" + quantidade + "' WHERE id = '" + produtoId
 						+ "';";
+				
+				double subTotal = 0;
+				String query6 = "SELECT * from  item_pedido WHERE pedido_id = '"+pedidoId+"';";
+				this.resulSet = this.statement.executeQuery(query6);
+				if(resulSet.next()) {
+					 subTotal = resulSet.getDouble("sub_total");
+				}
 
 				// busca o preco total da entidade pedido
 				String query4 = "select total_pedido from pedido where id = '" + pedidoId + "';";
@@ -314,10 +321,11 @@ public class ConnectionBancoDeDados {
 				if (resulSet.next()) {
 					totalPedido = resulSet.getDouble("total_pedido");
 				}
-				double qtd = Double.valueOf(quantidade);
-				double subTotal = (qtd * precoUnitario);
+//				double qtd = Double.valueOf(quantidade);
+//				double subTotal = (qtd * precoUnitario);
+//				System.out.println(qtd + " x "+ precoUnitario + " = " + "subtotal -> "+ subTotal);
 				String query5 = "UPDATE pedido SET total_pedido = '"+totalPedido+"' + '" + subTotal
-						+ "'  WHERE id = '" + produtoId + "';";
+						+ "'  WHERE id = '" + pedidoId + "';";
 
 				System.out.println("QUERY5 " + query5);
 //				System.out.println(query);
