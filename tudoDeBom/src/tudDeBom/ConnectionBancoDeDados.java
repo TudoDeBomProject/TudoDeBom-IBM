@@ -268,10 +268,10 @@ public class ConnectionBancoDeDados {
 	public void addItemPedidoPedido(int pedidoId, int produtoId, int quantidade) {
 		try {
 			// linha de execução da sintaxe de insert em SQL
-
 			String query3 = "select * from produto where id = '" + produtoId + "'";
 			this.resulSet = this.statement.executeQuery(query3);
 			this.statement = this.connection.createStatement();
+			
 			double precoUnitario = 0;
 			int estoque = 0;
 			boolean disponivel = false;
@@ -284,22 +284,55 @@ public class ConnectionBancoDeDados {
 				remedioFlag = resulSet.getBoolean("remedio_flag");
 				descontoFlag = resulSet.getBoolean("desconto_flag");
 			}
+			
+//			String query7 = "select * from pedido where pedido.id like '%"+pedidoId+"%';";
+//			this.resulSet = this.statement.executeQuery(query7);
+//			int idPedido = 0;
+//			if(resulSet.next()) {
+//				idPedido = resulSet.getInt("id");
+//			}
 
-			if (estoque > 0 && disponivel) {
+			if (estoque > 0 && disponivel ) {
 
 				if (remedioFlag == true || descontoFlag == true) {
 					String query = "INSERT INTO item_pedido (pedido_id, produto_id, quantidade, sub_total) values ('"
 							+ pedidoId + "', '" + produtoId + "', '" + quantidade + "', '"
 							+ (quantidade * (precoUnitario -(precoUnitario * 0.2))) + "');";
+					
+					String query4 = "select total_pedido from pedido where id = '" + pedidoId + "';";
+					this.resulSet = this.statement.executeQuery(query4);
+					double totalPedido = 0.0;
+					if (resulSet.next()) {
+						totalPedido = resulSet.getDouble("total_pedido");
+					}
+					
+					String query5 = "UPDATE pedido SET total_pedido = '"+totalPedido+"' + '" + (quantidade * (precoUnitario -(precoUnitario * 0.2)))
+							+ "'  WHERE id = '" + pedidoId + "';";
+					
 					this.statement.execute(query);
+					this.statement.execute(query5);
 					System.out.println(query);
+					System.out.println("QUERY5 " + query5);
 					System.out.println("Descontado");
 				} else {
 					String query = "INSERT INTO item_pedido (pedido_id, produto_id, quantidade, sub_total) values ('"
 							+ pedidoId + "', '" + produtoId + "', '" + quantidade + "', '"
 							+ (quantidade * precoUnitario) + "');";
+					
+					String query4 = "select total_pedido from pedido where id = '" + pedidoId + "';";
+					this.resulSet = this.statement.executeQuery(query4);
+					double totalPedido = 0.0;
+					if (resulSet.next()) {
+						totalPedido = resulSet.getDouble("total_pedido");
+					}
+					
+					String query5 = "UPDATE pedido SET total_pedido = '"+totalPedido+"' + '" + (quantidade * precoUnitario)
+							+ "'  WHERE id = '" + pedidoId + "';";
+					
 					this.statement.execute(query);
+					this.statement.execute(query5);
 					System.out.println(query);
+					System.out.println("QUERY5 " + query5);
 					System.out.println("Sem Desconto");
 				}
 
@@ -307,35 +340,37 @@ public class ConnectionBancoDeDados {
 				String query2 = "UPDATE produto SET estoque = estoque - '" + quantidade + "' WHERE id = '" + produtoId
 						+ "';";
 				
-				double subTotal = 0;
-				String query6 = "SELECT * from  item_pedido WHERE pedido_id = '"+pedidoId+"';";
-				this.resulSet = this.statement.executeQuery(query6);
-				if(resulSet.next()) {
-					 subTotal = resulSet.getDouble("sub_total");
-				}
+				
+//				String query6 = "SELECT * from  item_pedido WHERE pedido_id = '"+pedidoId+"';";
+//				this.resulSet = this.statement.executeQuery(query6);
+//				double subTotal = 0.0;
+//				if(resulSet.next()) {
+//					 subTotal = resulSet.getDouble("sub_total");
+//				}
 
 				// busca o preco total da entidade pedido
-				String query4 = "select total_pedido from pedido where id = '" + pedidoId + "';";
-				this.resulSet = this.statement.executeQuery(query4);
-				double totalPedido = 0.0;
-				if (resulSet.next()) {
-					totalPedido = resulSet.getDouble("total_pedido");
-				}
+//				String query4 = "select total_pedido from pedido where id = '" + pedidoId + "';";
+//				this.resulSet = this.statement.executeQuery(query4);
+//				double totalPedido = 0.0;
+//				if (resulSet.next()) {
+//					totalPedido = resulSet.getDouble("total_pedido");
+//				}
 //				double qtd = Double.valueOf(quantidade);
 //				double subTotal = (qtd * precoUnitario);
 //				System.out.println(qtd + " x "+ precoUnitario + " = " + "subtotal -> "+ subTotal);
-				String query5 = "UPDATE pedido SET total_pedido = '"+totalPedido+"' + '" + subTotal
-						+ "'  WHERE id = '" + pedidoId + "';";
-
-				System.out.println("QUERY5 " + query5);
+//				String query5 = "UPDATE pedido SET total_pedido = '"+totalPedido+"' + '" + (quantidade * precoUnitario)
+//						+ "'  WHERE id = '" + pedidoId + "';";
+//
+//				System.out.println("QUERY5 " + query5);
+//				subTotal = 0;
 //				System.out.println(query);
 //				this.statement.execute(query);
 				this.statement.execute(query2);
-				this.statement.execute(query5);
+//				this.statement.execute(query5);
 				System.out.println("Adicionado");
 				System.out.println(disponivel);
 			} else {
-				System.out.println("Produto com estoque 0");
+				System.out.println("Produto com estoque 0 ou Indisponivel");
 			}
 
 		} catch (Exception e) {
@@ -360,7 +395,7 @@ public class ConnectionBancoDeDados {
 	public void deletarItemPedido(int id, int pedidoId) {
 		try {
 			String query = "DELETE FROM item_pedido WHERE id = '" + id + "' AND pedido_id = '"+pedidoId+"';";
-			String query3 = "SELECT *	FROM item_pedido WHERE id = '"+id+"';" ;
+			String query3 = "SELECT *	FROM item_pedido WHERE id = '"+id+"' AND pedido_id = '"+pedidoId+"';" ;
 			this.resulSet = this.statement.executeQuery(query3);
 			this.statement = this.connection.createStatement();
 			int produtoId = 0;

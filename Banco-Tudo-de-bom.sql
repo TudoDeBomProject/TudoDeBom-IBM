@@ -97,4 +97,8 @@ select cl.nome 'CLIENTE', pd.id 'Nº PEDIDO', ip.quantidade 'QUANTIDADE', pr.pre
  inner join cliente cl on cl.id = pd.cliente_id
  inner join categoria c on c.id = pr.categoria_id where cl.id = 1; 
  
- select * from item_pedido where pedido_id = 2;
+ select * from item_pedido where pedido_id = 1 and pedido_id = 2;
+ 
+select last(pedido_id)  from item_pedido where item_pedido.pedido_id = 1;
+ 
+ select * from pedido where pedido.id like'%1%';
